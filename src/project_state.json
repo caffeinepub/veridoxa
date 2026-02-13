@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 7,
+  "summary": "Build a website named \"veridoxa\" to publish the user's research works, storytelling, and poetry, including a dedicated Works section to upload and share works as PDFs (and other file formats), and add a top-navigation \"Introduction\" section/page.",
+  "architectural_notes": [
+    "Plan for file/asset storage and delivery to support uploading and serving PDFs/attachments (including access control for admin upload).",
+    "Add a new static (or CMS-managed) \"Introduction\" page and include it as a top-level navigation route/link."
+  ],
+  "known_issues": [
+    "Admin Works upload UI has no visible option/button to add/upload works; needs repair so authenticated admins can upload PDFs/other files."
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-create-a-public-facing-website-named-veridoxa-with-a-responsive-layout-and-top-navigation-that-clearly-organizes-content-into-three-primary-sections-research-storytelling-and-poetry",
+      "title": "Create a public-facing website named \"veridoxa\" with a responsive layout and top navigation that clearly organizes content into three primary sections: Research, Storytelling, and Poetry.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-coherent-distinctive-visual-theme-colors-typography-spacing-components-for-veridoxa-and-apply-it-consistently-across-all-pages-and-ui-states",
+      "title": "Implement a coherent, distinctive visual theme (colors, typography, spacing, components) for veridoxa and apply it consistently across all pages and UI states.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-content-browsing-pages-for-each-section-research-storytelling-poetry-that-list-published-entries-with-title-date-short-excerpt-and-optional-tags-and-allow-filtering-by-tag-and-sorting-newest-first-by-default",
+      "title": "Add content browsing pages for each section (Research, Storytelling, Poetry) that list published entries with title, date, short excerpt, and optional tags, and allow filtering by tag and sorting (newest first by default).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-content-detail-page-for-a-single-entry-that-displays-title-author-name-static-label-is-fine-publish-date-tags-and-the-full-body-content-formatted-for-long-reading-including-headings-lists-links-and-code-blocks-if-present",
+      "title": "Add a content detail page for a single entry that displays title, author name (static label is fine), publish date, tags, and the full body content formatted for long reading (including headings, lists, links, and code blocks if present).",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-a-simple-site-wide-search-ui-that-searches-across-published-entries-title-and-body-and-displays-results-grouped-or-filterable-by-section-research-storytelling-poetry",
+      "title": "Provide a simple site-wide search UI that searches across published entries (title and body) and displays results grouped or filterable by section (Research/Storytelling/Poetry).",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-an-author-admin-area-secured-by-internet-identity-login-to-create-edit-publish-unpublish-and-delete-entries-in-any-of-the-three-sections-only-the-site-owner-s-can-access-write-operations",
+      "title": "Implement an author/admin area secured by Internet Identity login to create, edit, publish/unpublish, and delete entries in any of the three sections. Only the site owner(s) can access write operations.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-frontend-wire-the-ui-to-backend-apis-using-react-query-for-loading-states-caching-and-invalidation-after-admin-mutations-create-update-publish-delete-so-lists-and-detail-pages-update-correctly",
+      "title": "Frontend: wire the UI to backend APIs using React Query for loading states, caching, and invalidation after admin mutations (create/update/publish/delete) so lists and detail pages update correctly.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-basic-informational-pages-about-describing-veridoxa-at-a-high-level-and-a-minimal-footer-with-copyright-and-navigation-links",
+      "title": "Add basic informational pages: About (describing veridoxa at a high level) and a minimal footer with copyright and navigation links.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-generated-static-image-assets-for-veridoxa-logo-and-a-subtle-hero-cover-background-stored-under-frontend-public-assets-generated-and-render-them-in-the-ui-logo-in-header-hero-cover-on-home-or-section-landing",
+      "title": "Add generated static image assets for veridoxa (logo and a subtle hero/cover background) stored under frontend/public/assets/generated and render them in the UI (logo in header; hero/cover on home or section landing).",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-public-facing-works-section-in-the-frontend-with-a-browsing-page-that-lists-published-works-and-provides-clear-actions-to-view-for-pdfs-and-download-the-file",
+      "title": "Add a public-facing Works section in the frontend with a browsing page that lists published works and provides clear actions to view (for PDFs) and download the file.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-admin-ui-to-upload-and-manage-works-secured-by-internet-identity-and-existing-admin-authorization-checks",
+      "title": "Add admin UI to upload and manage Works, secured by Internet Identity and existing admin authorization checks.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-extend-frontend-routing-react-query-keys-and-hooks-to-support-works-data-fetching-and-admin-mutations-in-a-way-consistent-with-existing-entries-patterns",
+      "title": "Extend frontend routing, React Query keys, and hooks to support Works data fetching and admin mutations in a way consistent with existing Entries patterns.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-public-facing-introduction-page-section-that-displays-the-user-s-provided-introduction-text-the-self-introduction-previously-mentioned-in-conversation-e-g-identifying-the-author-as-arya-singh-and-referencing-the-books-waves-of-kashi-and-ashwathama-s-last-vow",
+      "title": "Create a new public-facing \"Introduction\" page/section that displays the user's provided introduction text (the self-introduction previously mentioned in conversation, e.g., identifying the author as Arya Singh and referencing the books \"Waves of Kashi\" and \"Ashwathama’s Last Vow\").",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-introduction-link-as-a-top-level-item-in-the-main-site-navigation-at-the-top-of-the-site-and-include-it-in-the-mobile-menu-as-well",
+      "title": "Add an \"Introduction\" link as a top-level item in the main site navigation at the top of the site, and include it in the mobile menu as well.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-authenticated-admins-can-clearly-find-and-use-the-works-upload-flow-by-making-the-upload-work-option-reliably-visible-and-providing-a-clear-navigation-path-from-the-admin-area-to-works-upload",
+      "title": "Ensure authenticated admins can clearly find and use the Works upload flow by making the \"Upload Work\" option reliably visible and providing a clear navigation path from the Admin area to Works upload.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-the-introduction-link-to-the-site-footer-navigation-alongside-the-existing-public-links",
+      "title": "Add the \"Introduction\" link to the site footer navigation alongside the existing public links.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Create the \"veridoxa\" website for publishing research works, storytelling, and poetry",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Backend: add persistent storage and APIs for entries with fields sufficient for publishing: id, section (Research/Storytelling/Poetry), title, body, tags, createdAt, updatedAt, published (boolean), and optional excerpt. Expose query methods for listing published entries by section, fetching a single entry, and searching; expose update methods for owner-only CRUD and publish toggling.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Add a dedicated section (and admin capability) to upload and publish works as PDF or other file formats, with browsing and download/view access for visitors.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Add backend support for a new \"Works\" content type that allows admins to upload files (PDF and other common document formats), store them persistently in the canister, and manage publish/unpublish and deletion.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Add a dedicated \"Introduction\" section/page and include it as a top-level item in the site’s main navigation (top of site).",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "veridoxa",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

@@ -1,0 +1,94 @@
+{
+  "kind": "build_request",
+  "title": "Add top-nav Introduction page and ensure admin Works upload is discoverable",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-15",
+      "text": "Create a new public-facing \"Introduction\" page/section that displays the user's provided introduction text (the self-introduction previously mentioned in conversation, e.g., identifying the author as Arya Singh and referencing the books \"Waves of Kashi\" and \"Ashwathama’s Last Vow\").",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3",
+          "msg-6"
+        ],
+        "quotes": [
+          "Yes and make a separate section of my introduction which i above mentioned",
+          "Yes at the top of site and I confirm"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A new route exists for the Introduction page (e.g., /introduction) and renders a dedicated page with an H1 title \"Introduction\" and the introduction body text.",
+        "The Introduction page uses the existing long-form reading styles (consistent with other content pages, e.g., using the existing Prose component pattern).",
+        "All user-facing text on the page is in English."
+      ]
+    },
+    {
+      "id": "REQ-16",
+      "text": "Add an \"Introduction\" link as a top-level item in the main site navigation at the top of the site, and include it in the mobile menu as well.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "Yes at the top of site and I confirm"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The header navigation (desktop) shows an \"Introduction\" link and it appears before the existing primary sections (Research/Storytelling/Poetry).",
+        "The mobile navigation drawer also includes the \"Introduction\" link.",
+        "Clicking \"Introduction\" navigates to the Introduction page route and highlights as active when on that page."
+      ]
+    },
+    {
+      "id": "REQ-17",
+      "text": "Ensure authenticated admins can clearly find and use the Works upload flow by making the \"Upload Work\" option reliably visible and providing a clear navigation path from the Admin area to Works upload.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "also how will i add my works because I don't get any option to add so also fix it"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When logged in as an admin, the Admin area provides an obvious path to Works management and uploading (e.g., Admin Dashboard has a \"Manage Works\" action that leads to the Works admin page, and the Works admin page has a visible \"Upload Work\" button that navigates to the upload form).",
+        "The Admin Works upload form allows selecting a file and submitting, and on success returns to the Works admin list.",
+        "If the user is not logged in or not an admin, the UI clearly indicates that Works uploading requires admin access (using the existing AdminGuard/authorization messaging patterns)."
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "text": "Add the \"Introduction\" link to the site footer navigation alongside the existing public links.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "Yes at the top of site and I confirm"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Footer navigation includes an \"Introduction\" link that routes to the Introduction page.",
+        "All footer links remain functional and styling remains consistent with the existing footer design."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain single-actor (all Motoko logic in backend/main.mo).",
+    "Do not edit files under frontend/src/components/ui (shadcn components) or any paths listed in frontend.immutablePaths.",
+    "Use English for any user-facing text."
+  ],
+  "nonGoals": [
+    "Adding new authentication providers beyond Internet Identity.",
+    "Adding categorization/taxonomy features for Works (categories/collections).",
+    "Changing backend data models for Entries or Works unless required to fix the missing upload option."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}
