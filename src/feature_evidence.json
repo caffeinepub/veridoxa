@@ -2,53 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-a-new-public-facing-introduction-page-section-that-displays-the-user-s-provided-introduction-text-the-self-introduction-previously-mentioned-in-conversation-e-g-identifying-the-author-as-arya-singh-and-referencing-the-books-waves-of-kashi-and-ashwathama-s-last-vow",
-      "featureTitle": "Create a new public-facing \"Introduction\" page/section that displays the user's provided introduction text (the self-introduction previously mentioned in conversation, e.g., identifying the author as Arya Singh and referencing the books \"Waves of Kashi\" and \"Ashwathama’s Last Vow\").",
+      "featureId": "feature-update-the-admin-works-ui-data-fetching-to-use-the-admin-only-list-all-works-api-not-the-public-published-only-list-so-admins-can-always-view-drafts-and-publish-unpublish-them-without-being-blocked-by-missing-items",
+      "featureTitle": "Update the Admin Works UI data fetching to use the admin-only “list all works” API (not the public published-only list) so admins can always view drafts and publish/unpublish them without being blocked by missing items.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/pages/IntroductionPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-15"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-an-introduction-link-as-a-top-level-item-in-the-main-site-navigation-at-the-top-of-the-site-and-include-it-in-the-mobile-menu-as-well",
-      "featureTitle": "Add an \"Introduction\" link as a top-level item in the main site navigation at the top of the site, and include it in the mobile menu as well.",
-      "files": [
-        "frontend/src/components/layout/SiteHeader.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-16"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-authenticated-admins-can-clearly-find-and-use-the-works-upload-flow-by-making-the-upload-work-option-reliably-visible-and-providing-a-clear-navigation-path-from-the-admin-area-to-works-upload",
-      "featureTitle": "Ensure authenticated admins can clearly find and use the Works upload flow by making the \"Upload Work\" option reliably visible and providing a clear navigation path from the Admin area to Works upload.",
-      "files": [
-        "frontend/src/components/auth/AdminGuard.tsx",
-        "frontend/src/pages/admin/AdminDashboardPage.tsx",
-        "frontend/src/pages/admin/AdminWorkUploadPage.tsx",
+        "frontend/src/hooks/queryKeys.ts",
+        "frontend/src/hooks/useAdminWorks.ts",
         "frontend/src/pages/admin/AdminWorksPage.tsx"
       ],
       "components": [
@@ -61,27 +19,7 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-17"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-the-introduction-link-to-the-site-footer-navigation-alongside-the-existing-public-links",
-      "featureTitle": "Add the \"Introduction\" link to the site footer navigation alongside the existing public links.",
-      "files": [
-        "frontend/src/components/layout/SiteFooter.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-18"
+        "REQ-24"
       ],
       "confidence": "high"
     }

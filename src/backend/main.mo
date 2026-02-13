@@ -1,23 +1,53 @@
+import Array "mo:core/Array";
+import List "mo:core/List";
 import Map "mo:core/Map";
 import Nat "mo:core/Nat";
 import Runtime "mo:core/Runtime";
 import Text "mo:core/Text";
-import List "mo:core/List";
 import Time "mo:core/Time";
 import Iter "mo:core/Iter";
-import Array "mo:core/Array";
+import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
 import AccessControl "authorization/access-control";
+import Migration "migration";
 
-
-
+(with migration = Migration.run)
 actor {
+  // Now persistent actor variable instead of local variable.
   let accessControlState = AccessControl.initState();
-  include MixinAuthorization(accessControlState);
 
+  include MixinAuthorization(accessControlState);
   include MixinStorage();
+
+  // User Profile System
+  public type UserProfile = {
+    name : Text;
+  };
+
+  let userProfiles = Map.empty<Principal, UserProfile>();
+
+  public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can access profiles");
+    };
+    userProfiles.get(caller);
+  };
+
+  public query ({ caller }) func getUserProfile(user : Principal) : async ?UserProfile {
+    if (caller != user and not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Can only view your own profile");
+    };
+    userProfiles.get(user);
+  };
+
+  public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can save profiles");
+    };
+    userProfiles.add(caller, profile);
+  };
 
   type Section = { #research; #storytelling; #poetry };
 
@@ -43,7 +73,7 @@ actor {
     tags : [Text],
     excerpt : ?Text,
   ) : async Entry {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can create entries");
     };
 
@@ -74,7 +104,7 @@ actor {
     tags : [Text],
     excerpt : ?Text,
   ) : async Entry {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can update entries");
     };
 
@@ -102,7 +132,7 @@ actor {
   };
 
   public shared ({ caller }) func deleteEntry(id : Nat) : async () {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can delete entries");
     };
 
@@ -114,7 +144,7 @@ actor {
   };
 
   public shared ({ caller }) func publishEntry(id : Nat, published : Bool) : async () {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can publish entries");
     };
 
@@ -139,13 +169,19 @@ actor {
         Runtime.trap("Entry not found");
       };
       case (?entry) {
-        // Only admins can view unpublished entries
         if (not entry.published and not AccessControl.isAdmin(accessControlState, caller)) {
-          Runtime.trap("Unauthorized: Entry not found or not published");
+          Runtime.trap("Unauthorized: Not published yet");
         };
         entry;
       };
     };
+  };
+
+  public query ({ caller }) func listAllEntries() : async [Entry] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can view all entries");
+    };
+    entries.values().toArray();
   };
 
   public query ({ caller }) func listPublishedBySection(section : Section) : async [Entry] {
@@ -169,6 +205,32 @@ actor {
     results.toArray();
   };
 
+  public query ({ caller }) func searchEntriesByTag(tag : Text) : async [Entry] {
+    let results = List.empty<Entry>();
+
+    for (entry in entries.values()) {
+      if (entry.published) {
+        for (entryTag in entry.tags.values()) {
+          if (tag == entryTag) {
+            results.add(entry);
+          };
+        };
+      };
+    };
+
+    results.toArray();
+  };
+
+  public query ({ caller }) func listRecentEntries(limit : Nat) : async [Entry] {
+    let publishedEntries = entries.values().toArray().filter(
+      func(entry) {
+        entry.published;
+      }
+    );
+
+    publishedEntries.sliceToArray(0, Nat.min(limit, publishedEntries.size()));
+  };
+
   ///////////////////
   // Works Support //
   ///////////////////
@@ -187,7 +249,7 @@ actor {
   };
 
   public shared ({ caller }) func createWork(title : Text, description : Text, file : Storage.ExternalBlob) : async Work {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can create works");
     };
 
@@ -209,7 +271,7 @@ actor {
   };
 
   public shared ({ caller }) func updateWork(id : Nat, title : Text, description : Text) : async Work {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can update works");
     };
 
@@ -235,7 +297,7 @@ actor {
   };
 
   public shared ({ caller }) func deleteWork(id : Nat) : async () {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can delete works");
     };
 
@@ -247,7 +309,7 @@ actor {
   };
 
   public shared ({ caller }) func publishWork(id : Nat, published : Bool) : async () {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can publish works");
     };
 
@@ -273,11 +335,18 @@ actor {
       };
       case (?work) {
         if (not work.published and not AccessControl.isAdmin(accessControlState, caller)) {
-          Runtime.trap("Unauthorized: Work not found or not published");
+          Runtime.trap("Unauthorized: Not published yet");
         };
         work;
       };
     };
+  };
+
+  public query ({ caller }) func listAllWorks() : async [Work] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can view all works");
+    };
+    works.values().toArray();
   };
 
   public query ({ caller }) func listPublishedWorks() : async [Work] {
@@ -299,5 +368,15 @@ actor {
     };
 
     results.toArray();
+  };
+
+  public query ({ caller }) func listRecentWorks(limit : Nat) : async [Work] {
+    let publishedWorks = works.values().toArray().filter(
+      func(work) {
+        work.published;
+      }
+    );
+
+    publishedWorks.sliceToArray(0, Nat.min(limit, publishedWorks.size()));
   };
 };

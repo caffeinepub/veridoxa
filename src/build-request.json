@@ -1,91 +1,74 @@
 {
   "kind": "build_request",
-  "title": "Add top-nav Introduction page and ensure admin Works upload is discoverable",
-  "priority": "normal",
+  "title": "Fix recurring admin denial when publishing Works (PDF/documents)",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-15",
-      "text": "Create a new public-facing \"Introduction\" page/section that displays the user's provided introduction text (the self-introduction previously mentioned in conversation, e.g., identifying the author as Arya Singh and referencing the books \"Waves of Kashi\" and \"Ashwathama’s Last Vow\").",
-      "target": "frontend",
+      "id": "REQ-22",
+      "text": "Persist Access Control (admin) state across canister upgrades so that admins do not lose publish permissions after deployments, and publishing Works (PDF/documents) is not denied again for previously-authorized admins.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-3",
-          "msg-6"
+          "msg-5"
         ],
         "quotes": [
-          "Yes and make a separate section of my introduction which i above mentioned",
-          "Yes at the top of site and I confirm"
+          "Please as admin give me access to publish my works in form pdf or documents because it is denied again to publish"
         ]
       },
       "acceptanceCriteria": [
-        "A new route exists for the Introduction page (e.g., /introduction) and renders a dedicated page with an H1 title \"Introduction\" and the introduction body text.",
-        "The Introduction page uses the existing long-form reading styles (consistent with other content pages, e.g., using the existing Prose component pattern).",
-        "All user-facing text on the page is in English."
+        "After an authenticated admin successfully initializes admin access once, subsequent canister upgrades do not revoke admin permissions.",
+        "Calling the Works publish/unpublish API as an authenticated admin succeeds after an upgrade without requiring re-initialization via secret token (unless explicitly revoked).",
+        "If admin permissions are not present, the backend returns a clear Unauthorized error (no silent failures).",
+        "A conditional state migration is added if required to preserve existing access-control/admin state during upgrade."
       ]
     },
     {
-      "id": "REQ-16",
-      "text": "Add an \"Introduction\" link as a top-level item in the main site navigation at the top of the site, and include it in the mobile menu as well.",
-      "target": "frontend",
+      "id": "REQ-23",
+      "text": "Add an admin-only backend query API to list all Works (published + drafts) so the admin UI can see and publish drafts reliably.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-5"
         ],
         "quotes": [
-          "Yes at the top of site and I confirm"
+          "Please as admin give me access to publish my works in form pdf or documents because it is denied again to publish"
         ]
       },
       "acceptanceCriteria": [
-        "The header navigation (desktop) shows an \"Introduction\" link and it appears before the existing primary sections (Research/Storytelling/Poetry).",
-        "The mobile navigation drawer also includes the \"Introduction\" link.",
-        "Clicking \"Introduction\" navigates to the Introduction page route and highlights as active when on that page."
+        "Backend exposes a query method that returns all Works for admins only.",
+        "Non-admin callers receive an Unauthorized error when calling this method.",
+        "Returned Works include both published=false and published=true items."
       ]
     },
     {
-      "id": "REQ-17",
-      "text": "Ensure authenticated admins can clearly find and use the Works upload flow by making the \"Upload Work\" option reliably visible and providing a clear navigation path from the Admin area to Works upload.",
+      "id": "REQ-24",
+      "text": "Update the Admin Works UI data fetching to use the admin-only “list all works” API (not the public published-only list) so admins can always view drafts and publish/unpublish them without being blocked by missing items.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3"
+          "msg-5"
         ],
         "quotes": [
-          "also how will i add my works because I don't get any option to add so also fix it"
+          "Please as admin give me access to publish my works in form pdf or documents because it is denied again to publish"
         ]
       },
       "acceptanceCriteria": [
-        "When logged in as an admin, the Admin area provides an obvious path to Works management and uploading (e.g., Admin Dashboard has a \"Manage Works\" action that leads to the Works admin page, and the Works admin page has a visible \"Upload Work\" button that navigates to the upload form).",
-        "The Admin Works upload form allows selecting a file and submitting, and on success returns to the Works admin list.",
-        "If the user is not logged in or not an admin, the UI clearly indicates that Works uploading requires admin access (using the existing AdminGuard/authorization messaging patterns)."
-      ]
-    },
-    {
-      "id": "REQ-18",
-      "text": "Add the \"Introduction\" link to the site footer navigation alongside the existing public links.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "Yes at the top of site and I confirm"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Footer navigation includes an \"Introduction\" link that routes to the Introduction page.",
-        "All footer links remain functional and styling remains consistent with the existing footer design."
+        "The Admin Works page lists both Draft and Published works for an authenticated admin.",
+        "From the Admin Works page, toggling Publish/Unpublish succeeds for an authenticated admin and the UI updates to reflect the new status.",
+        "The public Works page continues to show only published works (no regression).",
+        "If a publish action fails due to authorization, the UI displays an English error message with a clear next step (e.g., log in with the correct admin account / admin token link if required)."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain single-actor (all Motoko logic in backend/main.mo).",
-    "Do not edit files under frontend/src/components/ui (shadcn components) or any paths listed in frontend.immutablePaths.",
-    "Use English for any user-facing text."
+    "Backend must remain a single Motoko actor with all logic in backend/main.mo.",
+    "Create backend/migration.mo only if needed to preserve existing state across upgrades (conditional migration policy).",
+    "Do not modify any frontend files under frontend/src/components/ui or any paths listed in frontend.immutablePaths."
   ],
   "nonGoals": [
-    "Adding new authentication providers beyond Internet Identity.",
-    "Adding categorization/taxonomy features for Works (categories/collections).",
-    "Changing backend data models for Entries or Works unless required to fix the missing upload option."
+    "Adding new file types beyond the existing Works upload capability.",
+    "Implementing third-party authentication (only Internet Identity is supported).",
+    "Changing the public Works browsing experience beyond ensuring only published items are shown."
   ],
   "imageRequirements": {
     "required": [],

@@ -50,6 +50,7 @@ export const Work = IDL.Record({
   'description' : IDL.Text,
   'updatedAt' : IDL.Int,
 });
+export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 
 export const idlService = IDL.Service({
   '_caffeineStorageBlobIsLive' : IDL.Func(
@@ -88,15 +89,27 @@ export const idlService = IDL.Service({
   'createWork' : IDL.Func([IDL.Text, IDL.Text, ExternalBlob], [Work], []),
   'deleteEntry' : IDL.Func([IDL.Nat], [], []),
   'deleteWork' : IDL.Func([IDL.Nat], [], []),
+  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getEntry' : IDL.Func([IDL.Nat], [Entry], ['query']),
+  'getUserProfile' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(UserProfile)],
+      ['query'],
+    ),
   'getWork' : IDL.Func([IDL.Nat], [Work], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'listAllEntries' : IDL.Func([], [IDL.Vec(Entry)], ['query']),
+  'listAllWorks' : IDL.Func([], [IDL.Vec(Work)], ['query']),
   'listPublishedBySection' : IDL.Func([Section], [IDL.Vec(Entry)], ['query']),
   'listPublishedWorks' : IDL.Func([], [IDL.Vec(Work)], ['query']),
+  'listRecentEntries' : IDL.Func([IDL.Nat], [IDL.Vec(Entry)], ['query']),
+  'listRecentWorks' : IDL.Func([IDL.Nat], [IDL.Vec(Work)], ['query']),
   'publishEntry' : IDL.Func([IDL.Nat, IDL.Bool], [], []),
   'publishWork' : IDL.Func([IDL.Nat, IDL.Bool], [], []),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'searchEntries' : IDL.Func([IDL.Text], [IDL.Vec(Entry)], ['query']),
+  'searchEntriesByTag' : IDL.Func([IDL.Text], [IDL.Vec(Entry)], ['query']),
   'searchWorks' : IDL.Func([IDL.Text], [IDL.Vec(Work)], ['query']),
   'updateEntry' : IDL.Func(
       [
@@ -158,6 +171,7 @@ export const idlFactory = ({ IDL }) => {
     'description' : IDL.Text,
     'updatedAt' : IDL.Int,
   });
+  const UserProfile = IDL.Record({ 'name' : IDL.Text });
   
   return IDL.Service({
     '_caffeineStorageBlobIsLive' : IDL.Func(
@@ -196,15 +210,27 @@ export const idlFactory = ({ IDL }) => {
     'createWork' : IDL.Func([IDL.Text, IDL.Text, ExternalBlob], [Work], []),
     'deleteEntry' : IDL.Func([IDL.Nat], [], []),
     'deleteWork' : IDL.Func([IDL.Nat], [], []),
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getEntry' : IDL.Func([IDL.Nat], [Entry], ['query']),
+    'getUserProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(UserProfile)],
+        ['query'],
+      ),
     'getWork' : IDL.Func([IDL.Nat], [Work], ['query']),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'listAllEntries' : IDL.Func([], [IDL.Vec(Entry)], ['query']),
+    'listAllWorks' : IDL.Func([], [IDL.Vec(Work)], ['query']),
     'listPublishedBySection' : IDL.Func([Section], [IDL.Vec(Entry)], ['query']),
     'listPublishedWorks' : IDL.Func([], [IDL.Vec(Work)], ['query']),
+    'listRecentEntries' : IDL.Func([IDL.Nat], [IDL.Vec(Entry)], ['query']),
+    'listRecentWorks' : IDL.Func([IDL.Nat], [IDL.Vec(Work)], ['query']),
     'publishEntry' : IDL.Func([IDL.Nat, IDL.Bool], [], []),
     'publishWork' : IDL.Func([IDL.Nat, IDL.Bool], [], []),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'searchEntries' : IDL.Func([IDL.Text], [IDL.Vec(Entry)], ['query']),
+    'searchEntriesByTag' : IDL.Func([IDL.Text], [IDL.Vec(Entry)], ['query']),
     'searchWorks' : IDL.Func([IDL.Text], [IDL.Vec(Work)], ['query']),
     'updateEntry' : IDL.Func(
         [

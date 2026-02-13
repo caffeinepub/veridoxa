@@ -1,81 +1,60 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-13T18:37:16.794Z",
+  "generatedAt": "2026-02-13T19:33:14.586Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
-    "implemented": 4,
+    "total": 3,
+    "implemented": 1,
     "items": [
       {
-        "id": "REQ-15",
-        "summary": "Create a new public-facing \"Introduction\" page/section that displays the user's provided introduction text (the self-introduction previously mentioned in conversation, e.g., identifying the author as Arya Singh and referencing the books \"Waves of Kashi\" and \"Ashwathama’s Last Vow\").",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/IntroductionPage.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/IntroductionPage.tsx",
-          "frontend/src/App.tsx"
-        ]
+        "id": "REQ-22",
+        "summary": "Persist Access Control (admin) state across canister upgrades so that admins do not lose publish permissions after deployments, and publishing Works (PDF/documents) is not denied again for previously-authorized admins.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
-        "id": "REQ-16",
-        "summary": "Add an \"Introduction\" link as a top-level item in the main site navigation at the top of the site, and include it in the mobile menu as well.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/layout/SiteHeader.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/layout/SiteHeader.tsx"
-        ]
+        "id": "REQ-23",
+        "summary": "Add an admin-only backend query API to list all Works (published + drafts) so the admin UI can see and publish drafts reliably.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
-        "id": "REQ-17",
-        "summary": "Ensure authenticated admins can clearly find and use the Works upload flow by making the \"Upload Work\" option reliably visible and providing a clear navigation path from the Admin area to Works upload.",
+        "id": "REQ-24",
+        "summary": "Update the Admin Works UI data fetching to use the admin-only “list all works” API (not the public published-only list) so admins can always view drafts and publish/unpublish them without being blocked by missing items.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/admin/AdminDashboardPage.tsx",
+          "frontend/src/hooks/queryKeys.ts",
+          "frontend/src/hooks/useAdminWorks.ts",
           "frontend/src/pages/admin/AdminWorksPage.tsx",
-          "frontend/src/pages/admin/AdminWorkUploadPage.tsx",
-          "frontend/src/components/auth/AdminGuard.tsx"
+          "frontend/src/pages/WorksListPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/admin/AdminDashboardPage.tsx",
-          "frontend/src/pages/admin/AdminWorksPage.tsx",
-          "frontend/src/pages/admin/AdminWorkUploadPage.tsx",
-          "frontend/src/components/auth/AdminGuard.tsx"
-        ]
-      },
-      {
-        "id": "REQ-18",
-        "summary": "Add the \"Introduction\" link to the site footer navigation alongside the existing public links.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/layout/SiteFooter.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/layout/SiteFooter.tsx"
+          "frontend/src/hooks/queryKeys.ts",
+          "frontend/src/hooks/useAdminWorks.ts",
+          "frontend/src/pages/admin/AdminWorksPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/components/auth/AdminGuard.tsx",
-    "frontend/src/components/layout/SiteFooter.tsx",
-    "frontend/src/components/layout/SiteHeader.tsx",
-    "frontend/src/pages/IntroductionPage.tsx",
-    "frontend/src/pages/admin/AdminDashboardPage.tsx",
-    "frontend/src/pages/admin/AdminWorkUploadPage.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/queryKeys.ts",
+    "frontend/src/hooks/useAdminWorks.ts",
     "frontend/src/pages/admin/AdminWorksPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",

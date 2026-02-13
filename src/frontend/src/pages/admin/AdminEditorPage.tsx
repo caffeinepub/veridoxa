@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from '@tanstack/react-router';
 import { useEntry } from '../../hooks/useEntries';
 import { useCreateEntry, useUpdateEntry } from '../../hooks/useAdminEntries';
+import { useIsAdmin } from '../../hooks/useAuthz';
 import { Section } from '../../backend';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +16,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Save } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ArrowLeft, Save, AlertTriangle } from 'lucide-react';
 import QueryState from '../../components/feedback/QueryState';
 
 export default function AdminEditorPage() {
@@ -25,6 +27,7 @@ export default function AdminEditorPage() {
   const isEditing = !!id;
 
   const { data: entry, isLoading } = useEntry(isEditing ? BigInt(id) : BigInt(0));
+  const { data: isAdmin, isAdminSetupIncomplete, initializationError } = useIsAdmin();
   const createMutation = useCreateEntry();
   const updateMutation = useUpdateEntry();
 
@@ -70,6 +73,7 @@ export default function AdminEditorPage() {
   };
 
   const isPending = createMutation.isPending || updateMutation.isPending;
+  const showAdminWarning = !!(isAdminSetupIncomplete || initializationError || !isAdmin);
 
   if (isEditing && isLoading) {
     return (
@@ -86,6 +90,16 @@ export default function AdminEditorPage() {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Dashboard
         </Button>
+
+        {showAdminWarning && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Admin Access Issue</AlertTitle>
+            <AlertDescription>
+              {initializationError || 'Your admin access could not be verified. Please log out and log back in with the admin token link to ensure you can save entries.'}
+            </AlertDescription>
+          </Alert>
+        )}
 
         <Card>
           <CardHeader>
@@ -155,7 +169,7 @@ export default function AdminEditorPage() {
               </div>
 
               <div className="flex gap-4">
-                <Button type="submit" disabled={isPending}>
+                <Button type="submit" disabled={isPending || showAdminWarning}>
                   <Save className="mr-2 h-4 w-4" />
                   {isPending ? 'Saving...' : isEditing ? 'Update Entry' : 'Create Entry'}
                 </Button>

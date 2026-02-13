@@ -1,88 +1,37 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add Introduction page + navigation links and improve Admin Works upload discoverability",
+  "title": "Admin Works: fetch drafts via admin-only list-all API and improve auth error feedback",
   "requirements": [
     {
-      "id": "REQ-15",
-      "summary": "Add a dedicated public Introduction page that renders the provided English self-introduction with long-form reading styles.",
+      "id": "REQ-24",
+      "summary": "Update Admin Works UI data fetching to use the admin-only list-all-works backend capability so admins can see drafts and publish/unpublish reliably, while keeping public Works list published-only.",
       "acceptanceCriteria": [
-        "A new route exists for the Introduction page (e.g., /introduction) and renders a dedicated page with an H1 title \"Introduction\" and the introduction body text.",
-        "The Introduction page uses the existing long-form reading styles (consistent with other content pages, e.g., using the existing Prose component pattern).",
-        "All user-facing text on the page is in English."
+        "The Admin Works page lists both Draft and Published works for an authenticated admin.",
+        "From the Admin Works page, toggling Publish/Unpublish succeeds for an authenticated admin and the UI updates to reflect the new status.",
+        "The public Works page continues to show only published works (no regression).",
+        "If a publish action fails due to authorization, the UI displays an English error message with a clear next step (e.g., log in with the correct admin account / admin token link if required)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/IntroductionPage.tsx",
-          "operation": "create",
-          "description": "Create a new IntroductionPage that follows the same container/max-width pattern as other content pages (e.g., AboutPage) and wraps the introduction body in the existing Prose component for long-form typography."
+          "path": "frontend/src/hooks/queryKeys.ts",
+          "operation": "modify",
+          "description": "Adjust React Query keys to distinguish admin-only 'all works' data from public published-only works, preventing cache collisions (e.g., add an admin-scoped works key used only by the Admin Works screen)."
         },
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/hooks/useAdminWorks.ts",
           "operation": "modify",
-          "description": "Register a new public route at /introduction that renders IntroductionPage, ensuring it is part of the router tree so navigation can reach it."
-        }
-      ]
-    },
-    {
-      "id": "REQ-16",
-      "summary": "Add an Introduction link to the top navigation (desktop and mobile) and ensure it highlights as active on the Introduction route.",
-      "acceptanceCriteria": [
-        "The header navigation (desktop) shows an \"Introduction\" link and it appears before the existing primary sections (Research/Storytelling/Poetry).",
-        "The mobile navigation drawer also includes the \"Introduction\" link.",
-        "Clicking \"Introduction\" navigates to the Introduction page route and highlights as active when on that page."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/layout/SiteHeader.tsx",
-          "operation": "modify",
-          "description": "Update the header navLinks to include an \"Introduction\" item (path /introduction) placed before Research/Storytelling/Poetry, and ensure both desktop and mobile menus render it with existing Link active styling. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-17",
-      "summary": "Make the Admin-to-Works upload path unmistakable for authenticated admins and ensure non-admins see clear authorization messaging for Works uploading.",
-      "acceptanceCriteria": [
-        "When logged in as an admin, the Admin area provides an obvious path to Works management and uploading (e.g., Admin Dashboard has a \"Manage Works\" action that leads to the Works admin page, and the Works admin page has a visible \"Upload Work\" button that navigates to the upload form).",
-        "The Admin Works upload form allows selecting a file and submitting, and on success returns to the Works admin list.",
-        "If the user is not logged in or not an admin, the UI clearly indicates that Works uploading requires admin access (using the existing AdminGuard/authorization messaging patterns)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/admin/AdminDashboardPage.tsx",
-          "operation": "modify",
-          "description": "Strengthen Works discoverability from the Admin Dashboard by making the Works actions more prominent (e.g., add a clearly-labeled primary action for \"Manage Works\" and a direct \"Upload Work\" action that routes to the upload form)."
+          "description": "Update the admin Works query hook to call the admin-only backend capability to list all works (drafts + published) instead of the public published-only list; update related cache invalidations to use the new admin-scoped query key; keep existing toast/error handling so authorization failures surface as clear English guidance. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/pages/admin/AdminWorksPage.tsx",
           "operation": "modify",
-          "description": "Add an explicit navigation path within the Works admin screen (e.g., a \"Back to Admin Dashboard\" control) and ensure the existing \"Upload Work\" button remains visually prominent even when the list is empty."
+          "description": "Update Admin Works page copy/empty-state messaging to reflect that it manages both drafts and published works; ensure it continues to render Draft/Published badges correctly and relies on the updated admin-only works query hook."
         },
         {
-          "path": "frontend/src/pages/admin/AdminWorkUploadPage.tsx",
+          "path": "frontend/src/pages/WorksListPage.tsx",
           "operation": "modify",
-          "description": "Ensure the Works upload UX clearly supports file selection and submission with progress, and confirm that successful submission reliably navigates back to the Works admin list; use the blob-storage ExternalBlob flow already present for uploads. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/auth/AdminGuard.tsx",
-          "operation": "modify",
-          "description": "Refine the existing authorization messaging to explicitly mention that Works uploading/management requires admin access while keeping the current AdminGuard pattern and styling; use the authorization component’s role-based access control behavior already wired into the app. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-18",
-      "summary": "Add an Introduction link to the footer navigation alongside existing public links.",
-      "acceptanceCriteria": [
-        "Footer navigation includes an \"Introduction\" link that routes to the Introduction page.",
-        "All footer links remain functional and styling remains consistent with the existing footer design."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/layout/SiteFooter.tsx",
-          "operation": "modify",
-          "description": "Insert an \"Introduction\" Link (to /introduction) into the footer nav alongside the existing public links, preserving existing layout and styling."
+          "description": "Regression check: ensure the public Works list continues to use published-only data hooks/query keys and is unaffected by the admin-only 'all works' caching changes (no behavior change intended)."
         }
       ]
     }

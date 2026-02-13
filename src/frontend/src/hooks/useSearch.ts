@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { useActor } from './useActor';
+import { useRobustActor } from './useRobustActor';
 import { queryKeys } from './queryKeys';
 import { type Entry, Section } from '../backend';
 
 export function useSearch(searchTerm: string, sectionFilter?: Section) {
-  const { actor, isFetching: actorFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useRobustActor();
 
   return useQuery<Entry[]>({
     queryKey: queryKeys.search.query(searchTerm, sectionFilter),

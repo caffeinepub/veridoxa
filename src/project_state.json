@@ -1,13 +1,17 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 7,
+  "projectStateVersion": 11,
   "summary": "Build a website named \"veridoxa\" to publish the user's research works, storytelling, and poetry, including a dedicated Works section to upload and share works as PDFs (and other file formats), and add a top-navigation \"Introduction\" section/page.",
   "architectural_notes": [
     "Plan for file/asset storage and delivery to support uploading and serving PDFs/attachments (including access control for admin upload).",
-    "Add a new static (or CMS-managed) \"Introduction\" page and include it as a top-level navigation route/link."
+    "Add a new static (or CMS-managed) \"Introduction\" page and include it as a top-level navigation route/link.",
+    "Investigate and align admin authorization checks (Internet Identity principal/owner list) between frontend and backend to prevent false \"Access denied\" on admin posting/mutations.",
+    "Investigate recurring \"Access denied\" when admins attempt to publish Works (PDF/doc uploads) in production; verify canister-level admin authorization and frontend identity/principal propagation for Works publish mutations."
   ],
   "known_issues": [
-    "Admin Works upload UI has no visible option/button to add/upload works; needs repair so authenticated admins can upload PDFs/other files."
+    "Admin Works upload UI has no visible option/button to add/upload works; needs repair so authenticated admins can upload PDFs/other files.",
+    "Posting/creating content in the admin area results in an \"Access denied\" error for the user; admin write authorization appears to be failing.",
+    "Admin attempting to publish Works (PDF/documents) is again receiving \"Access denied\"; Works publish permission/auth appears to be failing/regressing in production."
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -138,6 +142,38 @@
         "REQ-18"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-fix-admin-write-authorization-so-authenticated-admins-can-successfully-create-update-publish-delete-entries-and-works-without-receiving-an-access-denied-unauthorized-only-admins-error",
+      "title": "Fix admin write authorization so authenticated admins can successfully create/update/publish/delete Entries and Works without receiving an \"Access denied\" / \"Unauthorized: Only admins...\" error.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-access-control-initialization-robust-so-admin-status-persists-across-page-refreshes-and-does-not-silently-fail-due-to-missing-empty-admin-token-initialization",
+      "title": "Make access-control initialization robust so admin status persists across page refreshes and does not silently fail due to missing/empty admin token initialization.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-improve-the-admin-ui-error-handling-for-failed-post-save-actions-so-unauthorized-failures-are-presented-as-a-clear-guidance-message-not-only-a-raw-error-string-and-include-a-clear-next-step-for-the-user-to-regain-admin-access",
+      "title": "Improve the Admin UI error handling for failed post/save actions so \"Unauthorized\" failures are presented as a clear guidance message (not only a raw error string), and include a clear next step for the user to regain admin access.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-admin-works-ui-data-fetching-to-use-the-admin-only-list-all-works-api-not-the-public-published-only-list-so-admins-can-always-view-drafts-and-publish-unpublish-them-without-being-blocked-by-missing-items",
+      "title": "Update the Admin Works UI data fetching to use the admin-only “list all works” API (not the public published-only list) so admins can always view drafts and publish/unpublish them without being blocked by missing items.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -173,6 +209,22 @@
       "id": "AR-11",
       "summary": "Add a dedicated \"Introduction\" section/page and include it as a top-level item in the site’s main navigation (top of site).",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Persist Access Control (admin) state across canister upgrades so that admins do not lose publish permissions after deployments, and publishing Works (PDF/documents) is not denied again for previously-authorized admins.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Add an admin-only backend query API to list all Works (published + drafts) so the admin UI can see and publish drafts reliably.",
+      "reqIds": [
+        "REQ-23"
+      ],
       "status": "pending"
     }
   ],

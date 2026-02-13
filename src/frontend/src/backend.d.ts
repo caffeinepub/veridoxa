@@ -34,6 +34,9 @@ export interface Work {
     description: string;
     updatedAt: bigint;
 }
+export interface UserProfile {
+    name: string;
+}
 export enum Section {
     research = "research",
     poetry = "poetry",
@@ -50,15 +53,23 @@ export interface backendInterface {
     createWork(title: string, description: string, file: ExternalBlob): Promise<Work>;
     deleteEntry(id: bigint): Promise<void>;
     deleteWork(id: bigint): Promise<void>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getEntry(id: bigint): Promise<Entry>;
+    getUserProfile(user: Principal): Promise<UserProfile | null>;
     getWork(id: bigint): Promise<Work>;
     isCallerAdmin(): Promise<boolean>;
+    listAllEntries(): Promise<Array<Entry>>;
+    listAllWorks(): Promise<Array<Work>>;
     listPublishedBySection(section: Section): Promise<Array<Entry>>;
     listPublishedWorks(): Promise<Array<Work>>;
+    listRecentEntries(limit: bigint): Promise<Array<Entry>>;
+    listRecentWorks(limit: bigint): Promise<Array<Work>>;
     publishEntry(id: bigint, published: boolean): Promise<void>;
     publishWork(id: bigint, published: boolean): Promise<void>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
     searchEntries(searchTerm: string): Promise<Array<Entry>>;
+    searchEntriesByTag(tag: string): Promise<Array<Entry>>;
     searchWorks(searchTerm: string): Promise<Array<Work>>;
     updateEntry(id: bigint, section: Section, title: string, body: string, tags: Array<string>, excerpt: string | null): Promise<Entry>;
     updateWork(id: bigint, title: string, description: string): Promise<Work>;

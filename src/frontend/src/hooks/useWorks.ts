@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { useActor } from './useActor';
+import { useRobustActor } from './useRobustActor';
 import { queryKeys } from './queryKeys';
 import { type Work } from '../backend';
 
 export function usePublishedWorks() {
-  const { actor, isFetching: actorFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useRobustActor();
 
   return useQuery<Work[]>({
     queryKey: queryKeys.works.published,
@@ -18,7 +18,7 @@ export function usePublishedWorks() {
 }
 
 export function useWork(id: bigint) {
-  const { actor, isFetching: actorFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useRobustActor();
 
   return useQuery<Work>({
     queryKey: queryKeys.works.detail(id),

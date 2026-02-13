@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useActor } from './useActor';
+import { useRobustActor } from './useRobustActor';
 import { queryKeys } from './queryKeys';
 import { type Entry, Section } from '../backend';
 import { toast } from 'sonner';
+import { getErrorMessage } from '../utils/authErrorMessages';
 
 export function useCreateEntry() {
-  const { actor } = useActor();
+  const { actor } = useRobustActor();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -25,13 +26,14 @@ export function useCreateEntry() {
       toast.success('Entry created successfully');
     },
     onError: (error: Error) => {
-      toast.error(`Failed to create entry: ${error.message}`);
+      const message = getErrorMessage(error, 'Failed to create entry');
+      toast.error(message);
     },
   });
 }
 
 export function useUpdateEntry() {
-  const { actor } = useActor();
+  const { actor } = useRobustActor();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -53,13 +55,14 @@ export function useUpdateEntry() {
       toast.success('Entry updated successfully');
     },
     onError: (error: Error) => {
-      toast.error(`Failed to update entry: ${error.message}`);
+      const message = getErrorMessage(error, 'Failed to update entry');
+      toast.error(message);
     },
   });
 }
 
 export function useDeleteEntry() {
-  const { actor } = useActor();
+  const { actor } = useRobustActor();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -74,13 +77,14 @@ export function useDeleteEntry() {
       toast.success('Entry deleted successfully');
     },
     onError: (error: Error) => {
-      toast.error(`Failed to delete entry: ${error.message}`);
+      const message = getErrorMessage(error, 'Failed to delete entry');
+      toast.error(message);
     },
   });
 }
 
 export function usePublishEntry() {
-  const { actor } = useActor();
+  const { actor } = useRobustActor();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -96,7 +100,8 @@ export function usePublishEntry() {
       toast.success(data.published ? 'Entry published' : 'Entry unpublished');
     },
     onError: (error: Error) => {
-      toast.error(`Failed to update publish status: ${error.message}`);
+      const message = getErrorMessage(error, 'Failed to update publish status');
+      toast.error(message);
     },
   });
 }

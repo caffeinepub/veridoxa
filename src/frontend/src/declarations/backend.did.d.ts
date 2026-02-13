@@ -25,6 +25,7 @@ export type ExternalBlob = Uint8Array;
 export type Section = { 'research' : null } |
   { 'poetry' : null } |
   { 'storytelling' : null };
+export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
@@ -73,15 +74,23 @@ export interface _SERVICE {
   'createWork' : ActorMethod<[string, string, ExternalBlob], Work>,
   'deleteEntry' : ActorMethod<[bigint], undefined>,
   'deleteWork' : ActorMethod<[bigint], undefined>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getEntry' : ActorMethod<[bigint], Entry>,
+  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'getWork' : ActorMethod<[bigint], Work>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'listAllEntries' : ActorMethod<[], Array<Entry>>,
+  'listAllWorks' : ActorMethod<[], Array<Work>>,
   'listPublishedBySection' : ActorMethod<[Section], Array<Entry>>,
   'listPublishedWorks' : ActorMethod<[], Array<Work>>,
+  'listRecentEntries' : ActorMethod<[bigint], Array<Entry>>,
+  'listRecentWorks' : ActorMethod<[bigint], Array<Work>>,
   'publishEntry' : ActorMethod<[bigint, boolean], undefined>,
   'publishWork' : ActorMethod<[bigint, boolean], undefined>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'searchEntries' : ActorMethod<[string], Array<Entry>>,
+  'searchEntriesByTag' : ActorMethod<[string], Array<Entry>>,
   'searchWorks' : ActorMethod<[string], Array<Work>>,
   'updateEntry' : ActorMethod<
     [bigint, Section, string, string, Array<string>, [] | [string]],

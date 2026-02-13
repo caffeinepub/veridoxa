@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { useActor } from './useActor';
+import { useRobustActor } from './useRobustActor';
 import { queryKeys } from './queryKeys';
 import { type Entry, Section } from '../backend';
 
 export function usePublishedEntries(section: Section) {
-  const { actor, isFetching: actorFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useRobustActor();
 
   return useQuery<Entry[]>({
     queryKey: queryKeys.entries.bySection(section),
@@ -18,7 +18,7 @@ export function usePublishedEntries(section: Section) {
 }
 
 export function useEntry(id: bigint) {
-  const { actor, isFetching: actorFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useRobustActor();
 
   return useQuery<Entry>({
     queryKey: queryKeys.entries.detail(id),

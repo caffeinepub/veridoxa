@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCreateWork } from '../../hooks/useAdminWorks';
+import { useIsAdmin } from '../../hooks/useAuthz';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Upload } from 'lucide-react';
+import { ArrowLeft, Upload, AlertTriangle } from 'lucide-react';
 import { ExternalBlob } from '../../backend';
 
 export default function AdminWorkUploadPage() {
   const navigate = useNavigate();
   const createMutation = useCreateWork();
+  const { data: isAdmin, isAdminSetupIncomplete, initializationError } = useIsAdmin();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -54,6 +57,7 @@ export default function AdminWorkUploadPage() {
   };
 
   const isUploading = createMutation.isPending;
+  const showAdminWarning = !!(isAdminSetupIncomplete || initializationError || !isAdmin);
 
   return (
     <div className="container py-12">
@@ -67,6 +71,16 @@ export default function AdminWorkUploadPage() {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Works
         </Button>
+
+        {showAdminWarning && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Admin Access Issue</AlertTitle>
+            <AlertDescription>
+              {initializationError || 'Your admin access could not be verified. Please log out and log back in with the admin token link to ensure you can upload works.'}
+            </AlertDescription>
+          </Alert>
+        )}
 
         <Card>
           <CardHeader>
@@ -129,7 +143,7 @@ export default function AdminWorkUploadPage() {
               )}
 
               <div className="flex gap-3">
-                <Button type="submit" disabled={isUploading || !file || !title.trim()}>
+                <Button type="submit" disabled={isUploading || !file || !title.trim() || showAdminWarning}>
                   <Upload className="mr-2 h-4 w-4" />
                   {isUploading ? 'Uploading...' : 'Upload Work'}
                 </Button>

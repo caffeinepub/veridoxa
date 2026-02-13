@@ -116,6 +116,9 @@ export interface Work {
     description: string;
     updatedAt: bigint;
 }
+export interface UserProfile {
+    name: string;
+}
 export interface _CaffeineStorageRefillResult {
     success?: boolean;
     topped_up_amount?: bigint;
@@ -143,20 +146,28 @@ export interface backendInterface {
     createWork(title: string, description: string, file: ExternalBlob): Promise<Work>;
     deleteEntry(id: bigint): Promise<void>;
     deleteWork(id: bigint): Promise<void>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getEntry(id: bigint): Promise<Entry>;
+    getUserProfile(user: Principal): Promise<UserProfile | null>;
     getWork(id: bigint): Promise<Work>;
     isCallerAdmin(): Promise<boolean>;
+    listAllEntries(): Promise<Array<Entry>>;
+    listAllWorks(): Promise<Array<Work>>;
     listPublishedBySection(section: Section): Promise<Array<Entry>>;
     listPublishedWorks(): Promise<Array<Work>>;
+    listRecentEntries(limit: bigint): Promise<Array<Entry>>;
+    listRecentWorks(limit: bigint): Promise<Array<Work>>;
     publishEntry(id: bigint, published: boolean): Promise<void>;
     publishWork(id: bigint, published: boolean): Promise<void>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
     searchEntries(searchTerm: string): Promise<Array<Entry>>;
+    searchEntriesByTag(tag: string): Promise<Array<Entry>>;
     searchWorks(searchTerm: string): Promise<Array<Work>>;
     updateEntry(id: bigint, section: Section, title: string, body: string, tags: Array<string>, excerpt: string | null): Promise<Entry>;
     updateWork(id: bigint, title: string, description: string): Promise<Work>;
 }
-import type { Entry as _Entry, ExternalBlob as _ExternalBlob, Section as _Section, UserRole as _UserRole, Work as _Work, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { Entry as _Entry, ExternalBlob as _ExternalBlob, Section as _Section, UserProfile as _UserProfile, UserRole as _UserRole, Work as _Work, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -327,18 +338,32 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getCallerUserProfile(): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserProfile();
+                return from_candid_opt_n22(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserProfile();
+            return from_candid_opt_n22(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getCallerUserRole(): Promise<UserRole> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserRole();
-                return from_candid_UserRole_n22(this._uploadFile, this._downloadFile, result);
+                return from_candid_UserRole_n23(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserRole();
-            return from_candid_UserRole_n22(this._uploadFile, this._downloadFile, result);
+            return from_candid_UserRole_n23(this._uploadFile, this._downloadFile, result);
         }
     }
     async getEntry(arg0: bigint): Promise<Entry> {
@@ -353,6 +378,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getEntry(arg0);
             return from_candid_Entry_n13(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getUserProfile(arg0);
+                return from_candid_opt_n22(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getUserProfile(arg0);
+            return from_candid_opt_n22(this._uploadFile, this._downloadFile, result);
         }
     }
     async getWork(arg0: bigint): Promise<Work> {
@@ -383,32 +422,88 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async listPublishedBySection(arg0: Section): Promise<Array<Entry>> {
+    async listAllEntries(): Promise<Array<Entry>> {
         if (this.processError) {
             try {
-                const result = await this.actor.listPublishedBySection(to_candid_Section_n10(this._uploadFile, this._downloadFile, arg0));
-                return from_candid_vec_n24(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.listPublishedBySection(to_candid_Section_n10(this._uploadFile, this._downloadFile, arg0));
-            return from_candid_vec_n24(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async listPublishedWorks(): Promise<Array<Work>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.listPublishedWorks();
+                const result = await this.actor.listAllEntries();
                 return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.listPublishedWorks();
+            const result = await this.actor.listAllEntries();
             return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async listAllWorks(): Promise<Array<Work>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listAllWorks();
+                return from_candid_vec_n26(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listAllWorks();
+            return from_candid_vec_n26(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async listPublishedBySection(arg0: Section): Promise<Array<Entry>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listPublishedBySection(to_candid_Section_n10(this._uploadFile, this._downloadFile, arg0));
+                return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listPublishedBySection(to_candid_Section_n10(this._uploadFile, this._downloadFile, arg0));
+            return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async listPublishedWorks(): Promise<Array<Work>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listPublishedWorks();
+                return from_candid_vec_n26(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listPublishedWorks();
+            return from_candid_vec_n26(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async listRecentEntries(arg0: bigint): Promise<Array<Entry>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listRecentEntries(arg0);
+                return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listRecentEntries(arg0);
+            return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async listRecentWorks(arg0: bigint): Promise<Array<Work>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listRecentWorks(arg0);
+                return from_candid_vec_n26(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listRecentWorks(arg0);
+            return from_candid_vec_n26(this._uploadFile, this._downloadFile, result);
         }
     }
     async publishEntry(arg0: bigint, arg1: boolean): Promise<void> {
@@ -439,32 +534,60 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async searchEntries(arg0: string): Promise<Array<Entry>> {
+    async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.searchEntries(arg0);
-                return from_candid_vec_n24(this._uploadFile, this._downloadFile, result);
+                const result = await this.actor.saveCallerUserProfile(arg0);
+                return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.searchEntries(arg0);
-            return from_candid_vec_n24(this._uploadFile, this._downloadFile, result);
+            const result = await this.actor.saveCallerUserProfile(arg0);
+            return result;
         }
     }
-    async searchWorks(arg0: string): Promise<Array<Work>> {
+    async searchEntries(arg0: string): Promise<Array<Entry>> {
         if (this.processError) {
             try {
-                const result = await this.actor.searchWorks(arg0);
+                const result = await this.actor.searchEntries(arg0);
                 return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.searchWorks(arg0);
+            const result = await this.actor.searchEntries(arg0);
             return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async searchEntriesByTag(arg0: string): Promise<Array<Entry>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.searchEntriesByTag(arg0);
+                return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.searchEntriesByTag(arg0);
+            return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async searchWorks(arg0: string): Promise<Array<Work>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.searchWorks(arg0);
+                return from_candid_vec_n26(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.searchWorks(arg0);
+            return from_candid_vec_n26(this._uploadFile, this._downloadFile, result);
         }
     }
     async updateEntry(arg0: bigint, arg1: Section, arg2: string, arg3: string, arg4: Array<string>, arg5: string | null): Promise<Entry> {
@@ -505,8 +628,8 @@ async function from_candid_ExternalBlob_n21(_uploadFile: (file: ExternalBlob) =>
 function from_candid_Section_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Section): Section {
     return from_candid_variant_n16(_uploadFile, _downloadFile, value);
 }
-function from_candid_UserRole_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
-    return from_candid_variant_n23(_uploadFile, _downloadFile, value);
+function from_candid_UserRole_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n24(_uploadFile, _downloadFile, value);
 }
 async function from_candid_Work_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Work): Promise<Work> {
     return await from_candid_record_n20(_uploadFile, _downloadFile, value);
@@ -515,6 +638,9 @@ function from_candid__CaffeineStorageRefillResult_n4(_uploadFile: (file: Externa
     return from_candid_record_n5(_uploadFile, _downloadFile, value);
 }
 function from_candid_opt_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
@@ -604,7 +730,7 @@ function from_candid_variant_n16(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): Section {
     return "research" in value ? Section.research : "poetry" in value ? Section.poetry : "storytelling" in value ? Section.storytelling : value;
 }
-function from_candid_variant_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;
 } | {
     user: null;
@@ -613,10 +739,10 @@ function from_candid_variant_n23(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): UserRole {
     return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
 }
-function from_candid_vec_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Entry>): Array<Entry> {
+function from_candid_vec_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Entry>): Array<Entry> {
     return value.map((x)=>from_candid_Entry_n13(_uploadFile, _downloadFile, x));
 }
-async function from_candid_vec_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Work>): Promise<Array<Work>> {
+async function from_candid_vec_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Work>): Promise<Array<Work>> {
     return await Promise.all(value.map(async (x)=>await from_candid_Work_n19(_uploadFile, _downloadFile, x)));
 }
 async function to_candid_ExternalBlob_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {

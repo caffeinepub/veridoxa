@@ -69,7 +69,7 @@ export default function AdminWorksPage() {
         <header className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="font-serif text-4xl font-bold tracking-tight">Manage Works</h1>
-            <p className="mt-2 text-muted-foreground">Upload and manage your published works</p>
+            <p className="mt-2 text-muted-foreground">Upload and manage all your works (drafts and published)</p>
           </div>
           <Button onClick={() => navigate({ to: '/admin/works/upload' })} size="lg">
             <Plus className="mr-2 h-4 w-4" />

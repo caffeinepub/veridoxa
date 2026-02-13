@@ -15,6 +15,7 @@ export const queryKeys = {
   },
   works: {
     all: ['works'] as const,
+    adminAll: ['works', 'admin', 'all'] as const,
     published: ['works', 'published'] as const,
     detail: (id: bigint) => ['works', 'detail', id.toString()] as const,
   },
